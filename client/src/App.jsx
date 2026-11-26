@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Activity,
-  ArrowDown,
-  ArrowUp,
   BriefcaseBusiness,
   Check,
   ChevronDown,
@@ -52,7 +50,7 @@ const palettes = ['violet', 'blue', 'green', 'orange', 'pink', 'cyan'];
 
 function App() {
   const [users, setUsers] = useState([]);
-  const [stats, setStats] = useState({ total: 0, active: 0, inactive: 0 });
+  const [stats, setStats] = useState({ total: 0, active: 0, inactive: 0, departments: 0 });
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [page, setPage] = useState(1);
@@ -165,7 +163,15 @@ function App() {
       user.status === 'active' ? 'Activo' : 'Inactivo'
     ]);
     const csv = [columns, ...rows]
-      .map((row) => row.map((value) => `"${String(value || '').replaceAll('"', '""')}"`).join(','))
+      .map((row) =>
+        row
+          .map((value) => {
+            const text = String(value || '');
+            const safeText = /^[\s]*[=+\-@]/.test(text) ? `'${text}` : text;
+            return `"${safeText.replaceAll('"', '""')}"`;
+          })
+          .join(',')
+      )
       .join('\n');
     const url = URL.createObjectURL(new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' }));
     const link = document.createElement('a');
@@ -240,7 +246,7 @@ function App() {
             <StatCard label="Total de usuarios" value={stats.total} icon={<UsersRound size={19} />} tone="purple" trend="Equipo completo" />
             <StatCard label="Usuarios activos" value={stats.active} icon={<UserRoundCheck size={19} />} tone="green" trend="Con acceso habilitado" />
             <StatCard label="Usuarios inactivos" value={stats.inactive} icon={<UserRound size={19} />} tone="amber" trend="Sin acceso al espacio" />
-            <StatCard label="Departamentos" value={new Set(users.map((user) => user.department).filter(Boolean)).size} icon={<BriefcaseBusiness size={19} />} tone="blue" trend="En esta página" />
+            <StatCard label="Departamentos" value={stats.departments} icon={<BriefcaseBusiness size={19} />} tone="blue" trend="En todo el espacio" />
           </section>
 
           <section className="users-panel" id="usuarios">
@@ -322,7 +328,7 @@ function App() {
               </div>
             </div>
           </section>
-          <footer className="page-footer"><span>© 2025 Nexo Workspace</span><span><a href="#privacidad">Privacidad</a><a href="#terminos">Términos</a><span className="footer-status"><span />Todos los sistemas operativos</span></span></footer>
+          <footer className="page-footer"><span>© 2026 Nexo Workspace</span><span><a href="#privacidad">Privacidad</a><a href="#terminos">Términos</a><span className="footer-status"><span />Todos los sistemas operativos</span></span></footer>
         </div>
       </main>
 
