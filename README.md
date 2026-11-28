@@ -1,4 +1,4 @@
-# Nexo — Gestión de usuarios
+# ILS — Gestión de usuarios
 
 Aplicación MERN para administrar el directorio de un equipo. Incluye creación, edición y eliminación de usuarios, búsqueda, filtro por estado, paginación y exportación CSV.
 
